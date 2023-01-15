@@ -1,7 +1,7 @@
 package databaseServices;
 
-import utils.Mapper;
 import parameters.StatementParameters;
+import utils.Mapper;
 import utils.Utils;
 
 import java.sql.*;
@@ -54,13 +54,8 @@ public class SqlHelper<T> {
                 result.add((T) mapper.map(resultSet));
             }
 
-            if (resultSet != null) {
-                resultSet.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+            resultSet.close();
+            statement.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -70,27 +65,21 @@ public class SqlHelper<T> {
 
     }
 
-    public List<T> getAll(String sql, Mapper mapper) {
+    public List<T> getAll(String sql, Mapper<T> mapper) {
 
         List<T> result = new ArrayList<T>();
-        PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        try (Connection connection = Database.getConnection()) {
-            statement = connection.prepareStatement(sql);
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                result.add((T) mapper.map(resultSet));
+                result.add(mapper.map(resultSet));
             }
 
-            if (resultSet != null) {
-                resultSet.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+            resultSet.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -100,7 +89,7 @@ public class SqlHelper<T> {
 
     }
 
-    public T getOne(String sql, StatementParameters parametrs, Mapper mapper) {
+    public T getOne(String sql, StatementParameters parametrs, Mapper<T> mapper) {
 
         List<T> list = getAll(sql, parametrs, mapper);
 
@@ -125,14 +114,8 @@ public class SqlHelper<T> {
             resultSet = statement.getGeneratedKeys();
             resultSet.next();
             result = resultSet.getInt(1);
-
-            if (resultSet != null) {
-                resultSet.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
+            resultSet.close();
+            statement.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -144,21 +127,12 @@ public class SqlHelper<T> {
 
     public void execSql(String sql, StatementParameters parametrs) {
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
 
         try (Connection connection = Database.getConnection()) {
             statement = connection.prepareStatement(sql);
             parametrs.fillStatement(statement);
             statement.executeUpdate();
-
-            if (resultSet != null) {
-                resultSet.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
-
+            statement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
