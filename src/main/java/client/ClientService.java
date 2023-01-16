@@ -36,6 +36,7 @@ public class ClientService {
         if (client != null) {
             return client.getName();
         }
+
         return null;
     }
 
@@ -49,9 +50,8 @@ public class ClientService {
             throw new RuntimeException("Invalid name length");
         }
 
-        StatementParameters parametrs = new StatementParameters();
-        parametrs.add(name);
-        parametrs.add(id);
+        StatementParameters parametrs = new StatementParameters(name, id);
+
         new SqlHelper<>().execSql("UPDATE client SET name = ? WHERE id = ?"
                 , parametrs);
     }

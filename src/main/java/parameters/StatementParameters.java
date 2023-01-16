@@ -5,14 +5,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatementParameters<T> {
+public class StatementParameters<T, E> {
+    private final List<Parametr> items = new ArrayList<Parametr>();
+
     public StatementParameters() {
+    }
+
+    public StatementParameters(T value, E value2) {
+        items.add(new Parametr<T>(value));
+        items.add(new Parametr<E>(value2));
     }
 
     public StatementParameters(T value) {
         items.add(new Parametr<T>(value));
     }
-    private final List<Parametr> items = new ArrayList<Parametr>();
 
     public void add(Parametr parametr) {
         items.add(parametr);
