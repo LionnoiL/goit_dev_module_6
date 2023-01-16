@@ -13,9 +13,9 @@ public class ClientService {
             throw new RuntimeException("Invalid name length");
         }
 
-        StatementParameters parametrs = new StatementParameters(name);
+        StatementParameters<String, Long > parametrs = new StatementParameters<>(name);
 
-        return new SqlHelper().insertOne(
+        return new SqlHelper<Long>().insertOne(
                 "INSERT INTO client (name) VALUES (?);",
                 parametrs
         );
@@ -27,10 +27,10 @@ public class ClientService {
             throw new RuntimeException("Invalid id");
         }
 
-        StatementParameters parametrs = new StatementParameters(id);
+        StatementParameters<Long, String> parameters = new StatementParameters<>(id);
 
         Client client = new SqlHelper<Client>().getOne("SELECT * FROM client WHERE id = ?",
-                parametrs,
+                parameters,
                 new ClientMapper());
 
         if (client != null) {
@@ -50,10 +50,10 @@ public class ClientService {
             throw new RuntimeException("Invalid name length");
         }
 
-        StatementParameters parametrs = new StatementParameters(name, id);
+        StatementParameters<String, Long> parameters = new StatementParameters<>(name, id);
 
         new SqlHelper<>().execSql("UPDATE client SET name = ? WHERE id = ?"
-                , parametrs);
+                , parameters);
     }
 
     public void deleteById(long id) {
@@ -62,16 +62,16 @@ public class ClientService {
             throw new RuntimeException("Invalid id");
         }
 
-        StatementParameters parametrs = new StatementParameters(id);
+        StatementParameters<Long, String> parameters = new StatementParameters<>(id);
 
         new SqlHelper<>().execSql("DELETE project_worker WHERE project_id in (SELECT id FROM project WHERE client_id = ?)"
-                , parametrs);
+                , parameters);
 
         new SqlHelper<>().execSql("DELETE project WHERE client_id = ?"
-                , parametrs);
+                , parameters);
 
         new SqlHelper<>().execSql("DELETE client WHERE id = ?"
-                , parametrs);
+                , parameters);
     }
 
     public List<Client> listAll() {

@@ -5,7 +5,7 @@ import utils.Mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ClientMapper implements Mapper {
+public class ClientMapper implements Mapper<Client> {
 
     public Client map(ResultSet rs) {
         try {
